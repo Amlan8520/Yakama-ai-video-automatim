@@ -1,1 +1,1 @@
-Place only original or properly licensed images here, named scene_01.jpg, scene_02.jpg, etc.
+Place an original or properly licensed voice track at voice.mp3.
