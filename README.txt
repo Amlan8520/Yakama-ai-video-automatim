@@ -1,0 +1,1 @@
+Place only original or properly licensed images here, named scene_01.jpg, scene_02.jpg, etc.
