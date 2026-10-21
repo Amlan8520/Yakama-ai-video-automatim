@@ -1,4 +1,4 @@
-name: YAKAMA Animal Story Automation
+name: YAKAMA Free Story Factory
 
 on:
   workflow_dispatch:
@@ -9,11 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  generate-story:
+  create-story:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -21,40 +21,12 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Generate Story
-        run: |
-          mkdir -p output
-          python - <<'PY'
-          from pathlib import Path
-          from datetime import datetime
+      - name: Generate Animal Story Package
+        run: python main.py
 
-          output = Path("output")
-          output.mkdir(exist_ok=True)
-
-          story = """
-          शीर्षक: जंगल का छोटा हाथी
-
-          एक हरे-भरे जंगल में मोटू नाम का छोटा हाथी रहता था।
-          एक दिन जंगल के जानवर पानी की तलाश में परेशान हो गए।
-
-          मोटू ने अपने दोस्तों के साथ मिलकर पानी खोजने का फैसला किया।
-          रास्ते में उन्हें कई मुश्किलें मिलीं, लेकिन उन्होंने हार नहीं मानी।
-
-          आखिरकार सभी जानवरों ने मिलकर पानी का सुरक्षित स्रोत खोज लिया।
-          जंगल में फिर से खुशी लौट आई।
-
-          सीख: मिल-जुलकर काम करने से मुश्किलें आसान हो जाती हैं।
-          """
-
-          filename = output / "animal_story.txt"
-          filename.write_text(story.strip(), encoding="utf-8")
-
-          print("Story draft created successfully!")
-          print(datetime.now().isoformat())
-          PY
-
-      - name: Save Story Draft
+      - name: Save Story Files
         uses: actions/upload-artifact@v4
         with:
-          name: YAKAMA-Animal-Story
-          path: output/animal_story.txt
+          name: YAKAMA-Free-Story-Package
+          path: output/
+          if-no-files-found: error
