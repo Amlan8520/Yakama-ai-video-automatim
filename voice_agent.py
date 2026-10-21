@@ -1,23 +1,12 @@
-from pathlib import Path
 import subprocess
-import shutil
+from pathlib import Path
 
 
 def generate_voice(text, output_file="output/voice.mp3"):
-    """
-    Generate Hindi voice using a locally installed espeak-ng.
-    Requires espeak-ng and ffmpeg for audio conversion.
-    """
-
     output_path = Path(output_file)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if not shutil.which("espeak-ng"):
-        print("espeak-ng is not installed. Voice generation skipped.")
-        return False
-
     if not text.strip():
-        print("No text provided.")
         return False
 
     try:
@@ -25,22 +14,30 @@ def generate_voice(text, output_file="output/voice.mp3"):
             [
                 "espeak-ng",
                 "-v", "hi",
-                "-s", "135",
+                "-s", "145",
                 "-w", str(output_path.with_suffix(".wav")),
-                text
+                text,
             ],
-            check=True
+            check=True,
+            capture_output=True,
+            text=True,
         )
-        print(f"Voice saved: {output_path.with_suffix('.wav')}")
-        return True
 
-    except (subprocess.CalledProcessError, OSError) as error:
+        wav_file = output_path.with_suffix(".wav")
+
+        subprocess.run(
+            [
+                "ffmpeg", "-y",
+                "-i", str(wav_file),
+                str(output_path),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        return output_path.exists() and output_path.stat().st_size > 0
+
+    except (subprocess.CalledProcessError, FileNotFoundError) as error:
         print(f"Voice generation failed: {error}")
         return False
-
-
-if __name__ == "__main__":
-    sample_text = (
-        "नमस्ते बच्चों! आज हम एक प्यारे हाथी की कहानी सुनेंगे।"
-    )
-    generate_voice(sample_text)
